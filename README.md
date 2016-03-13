@@ -9,4 +9,4 @@ cd bin &&
 everything is the GUI program for search, and the everything-updatedb is a tool for updating the database for everything.
 
 Main page:
-http://blog.csdn.net/toormi/article/details/50589811
+http://blog.csdn.net/toormi/article/details/50879574
