@@ -30,7 +30,12 @@ bool TaskManager::sudoRunProcess(const QString &program, const QStringList &argu
         m_pProc->waitForFinished(1000 * 5);
         return false;
     }
-    qDebug() << "run successfully finished.";
+
+    if (m_pProc->exitCode() != 0)
+    {
+        return false;
+    }
+
     return true;
 }
 
@@ -46,7 +51,7 @@ void TaskManager::run()
         emit taskFinished(TASKID_UPDATE_LOCATEDB, sudoRunProcess("updatedb"));
 
         /* task No2 : run everything-updatedb */
-        emit taskFinished(TASKID_UPDATE_SEARCHDB, sudoRunProcess("everything-updatedb"));
+        emit taskFinished(TASKID_UPDATE_SEARCHDB, sudoRunProcess("./everything-updatedb"));
 
     }
     exit();

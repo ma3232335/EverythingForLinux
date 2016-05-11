@@ -4,13 +4,15 @@
 #include <sudodialog.h>
 
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent)
+    QMainWindow(parent), m_sourceModel()
 {
     setupUi();
     setWindowIcon(QIcon(QPixmap("://windowIcon.png")));
-    connectDb();
-    loadSettings(1);
-    initTable();
+    if (connectDb())
+    {
+        loadSettings(1);
+        initTable();
+    }
 }
 
 MainWindow::~MainWindow()
@@ -69,7 +71,7 @@ bool MainWindow::connectDb()
     db.setDatabaseName(strDbName);
     if (!db.open())
     {
-        QMessageBox::warning(0, QObject::tr("Connect Database Error"), db.lastError().text());
+        QMessageBox::warning(0, "Connect Database Error", db.lastError().text());
         return false;
     }
     return true;
@@ -158,5 +160,11 @@ void MainWindow::on_keywordEdit_textChanged()
 
 void MainWindow::reloadModel()
 {
-        m_sourceModel->setQuery(strSelectSQL + strOrderByNm);
+    if (m_sourceModel == NULL)
+    {
+        loadSettings(1);
+        initTable();
+    }
+
+    m_sourceModel->setQuery(strSelectSQL + strOrderByNm);
 }

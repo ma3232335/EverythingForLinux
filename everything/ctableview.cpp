@@ -82,10 +82,13 @@ void CTableView::updateRow(const QModelIndex &item)
 void CTableView::leaveEvent(QEvent *event)
 {
     emit hoverRowChanged(-1);
-    int columnCount = model()->columnCount();
-    for (int i = columnCount - 1; i >= 0; i--)
+    if (model() != NULL)
     {
-        update(model()->index(m_hoverRow, i));
+        int columnCount = model()->columnCount();
+        for (int i = columnCount - 1; i >= 0; i--)
+        {
+            update(model()->index(m_hoverRow, i));
+        }
     }
     m_hoverRow = -1;
 }
