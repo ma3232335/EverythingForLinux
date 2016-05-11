@@ -10,7 +10,6 @@
 #include <QStatusBar>
 #include <QApplication>
 #include <QSqlQueryModel>
-#include <QSortFilterProxyModel>
 #include "csqlquerymodel.h"
 #include "ctableview.h"
 
@@ -50,7 +49,6 @@ private:
 
 public:
     CSqlQueryModel *m_sourceModel;
-    QSortFilterProxyModel *m_proxyModel;
 
     /* settings */
     bool m_enableMatchCase;

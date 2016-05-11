@@ -84,11 +84,7 @@ bool MainWindow::initTable()
     m_sourceModel->setHeaderData(2, Qt::Horizontal, "Size");
     m_sourceModel->setHeaderData(3, Qt::Horizontal, "Data Modified");
 
-    m_proxyModel = new QSortFilterProxyModel;
-    m_proxyModel->setSourceModel(m_sourceModel);
-    m_proxyModel->setFilterKeyColumn(0);
-
-    tableView->setModel(m_proxyModel);
+    tableView->setModel(m_sourceModel);
     tableView->setColumnWidth(0, 150);
     tableView->setColumnWidth(1, 250);
     tableView->setColumnWidth(2, 70);
@@ -162,5 +158,5 @@ void MainWindow::on_keywordEdit_textChanged()
 
 void MainWindow::reloadModel()
 {
-        m_proxyModel->setSourceModel(m_sourceModel);
+        m_sourceModel->setQuery(strSelectSQL + strOrderByNm);
 }

@@ -46,7 +46,7 @@ void TaskManager::run()
         emit taskFinished(TASKID_UPDATE_LOCATEDB, sudoRunProcess("updatedb"));
 
         /* task No2 : run everything-updatedb */
-        emit taskFinished(TASKID_UPDATE_SEARCHDB, sudoRunProcess("./everything-updatedb"));
+        emit taskFinished(TASKID_UPDATE_SEARCHDB, sudoRunProcess("everything-updatedb"));
 
     }
     exit();
