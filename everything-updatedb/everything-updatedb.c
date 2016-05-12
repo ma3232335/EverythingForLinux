@@ -174,6 +174,9 @@ static void handle_db (int fd, const char *database)
             goto err_path;
     }
 
+    /* create index on table(NAME) */
+    sqlite3_exec(g_sqlite3db, sql_create_index, NULL, NULL, NULL);
+
     /* transaction end */
     sqlite3_exec(g_sqlite3db, "COMMIT TRANSACTION", NULL, NULL, NULL);
     sqlite3_finalize(stmt);
@@ -287,13 +290,29 @@ int connect_sqlite3db()
     return 0;
 }
 
+static void help()
+{
+    printf("Usage: everything-updatedb [OPTION]\n"
+            "Update the database used by everything.\n"
+            "\n"
+            "-h         print this help\n"
+            "\n"
+            "Report bugs to mamingliang1990@163.com.\n"
+            );
+}
 
 int main(int argc, char *argv[])
 {
+    if (argc == 2 && strcmp(argv[1] ,"-h") == 0)
+    {
+        help();
+        exit(EXIT_SUCCESS);
+    }
+
     if (connect_sqlite3db() != 0)
     {
         fprintf(stderr, "Connect everything database error!\n");
-        return -1;
+        exit(EXIT_FAILURE);
     }
 
     obstack_init(&path_obstack);
@@ -304,5 +323,5 @@ int main(int argc, char *argv[])
     handle_mlocatedb_path_entry(mlocatedb_path"/"mlocatedb_name);
 
     disconnect_sqlite3db();
-    return 0;
+    exit(EXIT_SUCCESS);
 }
