@@ -43,12 +43,15 @@ private:
     void retranslateUi();
     bool initTable();
     bool connectDb();
+    bool reConnectDb();
     bool loadSettings(bool loadDefault = false);
     void setFilter(const QString& text);
     void setTitle(const QString& text);
+    void setStatus(const QString& text);
 
 public:
     CSqlQueryModel *m_sourceModel;
+    QSqlDatabase m_db;
 
     /* settings */
     bool m_enableMatchCase;

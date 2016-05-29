@@ -4,7 +4,8 @@
 #include <QThread>
 #include <QProcess>
 
-enum {
+enum 
+{
     TASKID_UPDATE_LOCATEDB = 1,
     TASKID_UPDATE_SEARCHDB,
 };

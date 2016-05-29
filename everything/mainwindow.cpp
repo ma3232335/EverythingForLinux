@@ -8,6 +8,9 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     setupUi();
     setWindowIcon(QIcon(QPixmap("://windowIcon.png")));
+    m_sourceModel = new CSqlQueryModel;
+    m_db = QSqlDatabase::addDatabase("QSQLITE");
+    m_db.setDatabaseName(strDbName);
     if (connectDb())
     {
         loadSettings(1);
@@ -64,14 +67,23 @@ void MainWindow::retranslateUi()
     setWindowTitle(QApplication::translate("MainWindow", "Everything", 0, QApplication::UnicodeUTF8));
 }
 
+bool MainWindow::reConnectDb()
+{
+    if (!m_db.isOpen())
+    {
+        m_db.close();
+    }
+
+    connectDb();
+
+    return true;
+}
+
 bool MainWindow::connectDb()
 {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-
-    db.setDatabaseName(strDbName);
-    if (!db.open())
+    if (!m_db.open())
     {
-        QMessageBox::warning(0, "Connect Database Error", db.lastError().text());
+        QMessageBox::warning(0, "Connect Database Error", m_db.lastError().text());
         return false;
     }
     return true;
@@ -79,7 +91,6 @@ bool MainWindow::connectDb()
 
 bool MainWindow::initTable()
 {
-    m_sourceModel = new CSqlQueryModel;
     m_sourceModel->setQuery(strSelectSQL + strOrderByNm);
     m_sourceModel->setHeaderData(0, Qt::Horizontal, "Name");
     m_sourceModel->setHeaderData(1, Qt::Horizontal, "Path");
@@ -109,6 +120,11 @@ bool MainWindow::loadSettings(bool loadDefault)
     {
         //load settings from ini file
     }
+}
+
+void MainWindow::setStatus(const QString& text)
+{
+    statusBar->showMessage("1234");
 }
 
 void MainWindow::setTitle(const QString& text)
@@ -155,16 +171,16 @@ void MainWindow::setFilter(const QString& text)
 void MainWindow::on_keywordEdit_textChanged()
 {
     setTitle(keywordEdit->text());
+    setStatus(keywordEdit->text());
     setFilter(keywordEdit->text());
 }
 
 void MainWindow::reloadModel()
 {
-    if (m_sourceModel == NULL)
-    {
-        loadSettings(1);
-        initTable();
-    }
+    qDebug() << "reloadModel";
+    reConnectDb();
+    loadSettings(1);
+    initTable();
 
     m_sourceModel->setQuery(strSelectSQL + strOrderByNm);
 }

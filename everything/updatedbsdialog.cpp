@@ -60,17 +60,25 @@ void UpdateDbsDialog::taskFinish(int taskid, bool success)
     {
     case TASKID_UPDATE_LOCATEDB:
         if (success)
+        {
             locateDbRes->setText("Locate database updated successfully.");
+        }
         else
+        {
             locateDbRes->setText("Locate database updated failed.");
+        }
         locateDbRes->show();
         break;
 
     case TASKID_UPDATE_SEARCHDB:
         if (success)
+        {
             searchDbRes->setText("Search database updated successfully.");
+        }
         else
+        {
             searchDbRes->setText("Search database updated failed.");
+        }
         searchDbRes->show();
         unlockBtn->hide();
         cancelBtn->setText("close");
