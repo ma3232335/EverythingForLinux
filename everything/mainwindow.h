@@ -12,6 +12,7 @@
 #include <QSqlQueryModel>
 #include "csqlquerymodel.h"
 #include "ctableview.h"
+#include <QSqlQuery>
 
 #include <QMessageBox>
 #include <QSqlError>
@@ -22,6 +23,7 @@ const QString strWhereLikeWildcard = " WHERE name LIKE '%%1%'";
 const QString strWhereGlob = " WHERE name GLOB '%1'"; /* match case */
 const QString strWhereLike = " WHERE name LIKE '%1'";
 const QString strOrderByNm = " ORDER BY name";
+const QString strCountSelectSQL = "SELECT COUNT(*) FROM everything";
 const QString strDbName = "/var/lib/everything/everything.db";
 
 class MainWindow : public QMainWindow
@@ -47,10 +49,10 @@ private:
     bool loadSettings(bool loadDefault = false);
     void setFilter(const QString& text);
     void setTitle(const QString& text);
-    void setStatus(const QString& text);
 
 public:
     CSqlQueryModel *m_sourceModel;
+    QSqlQuery *m_sqlQuery;
     QSqlDatabase m_db;
 
     /* settings */

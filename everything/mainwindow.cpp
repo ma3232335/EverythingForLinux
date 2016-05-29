@@ -9,6 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
     setupUi();
     setWindowIcon(QIcon(QPixmap("://windowIcon.png")));
     m_sourceModel = new CSqlQueryModel;
+    m_sqlQuery = new QSqlQuery;
     m_db = QSqlDatabase::addDatabase("QSQLITE");
     m_db.setDatabaseName(strDbName);
     if (connectDb())
@@ -20,12 +21,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-
+    delete m_sqlQuery;
 }
 
 void MainWindow::setupUi()
 {
-    resize(700, 432);
+    resize(698, 351);
     centralWidget = new QWidget(this);
 
     verticalLayout = new QVBoxLayout(centralWidget);
@@ -98,10 +99,10 @@ bool MainWindow::initTable()
     m_sourceModel->setHeaderData(3, Qt::Horizontal, "Data Modified");
 
     tableView->setModel(m_sourceModel);
-    tableView->setColumnWidth(0, 150);
-    tableView->setColumnWidth(1, 250);
+    tableView->setColumnWidth(0, 208);
+    tableView->setColumnWidth(1, 270);
     tableView->setColumnWidth(2, 70);
-    tableView->setColumnWidth(3, 110);
+    tableView->setColumnWidth(3, 130);
     tableView->setStyleSheet("QTableView{border-style: none}"
                              "QTableView::item:selected{background: rgb(51,153,255)}");
 
@@ -122,11 +123,6 @@ bool MainWindow::loadSettings(bool loadDefault)
     }
 }
 
-void MainWindow::setStatus(const QString& text)
-{
-    statusBar->showMessage("1234");
-}
-
 void MainWindow::setTitle(const QString& text)
 {
     if (text.isEmpty())
@@ -139,6 +135,7 @@ void MainWindow::setTitle(const QString& text)
     }
 }
 
+#include <QSqlRecord>
 void MainWindow::setFilter(const QString& text)
 {
     //    m_sourceModel->setQuery(strSelectSQL+" WHERE name LIKE '%" + text + "%' ORDER BY name");
@@ -171,7 +168,6 @@ void MainWindow::setFilter(const QString& text)
 void MainWindow::on_keywordEdit_textChanged()
 {
     setTitle(keywordEdit->text());
-    setStatus(keywordEdit->text());
     setFilter(keywordEdit->text());
 }
 

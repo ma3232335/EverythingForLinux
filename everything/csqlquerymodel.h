@@ -19,6 +19,10 @@ public:
     QVariant data ( const QModelIndex & item, int role = Qt::DisplayRole ) const ;
     void setQuery ( const QString & query, const QSqlDatabase & db = QSqlDatabase());
 
+private:
+    QVariant sizeValue(const size_t size) const;
+    QVariant timeValue(const time_t timep) const;
+
 signals:
 
 public slots:
