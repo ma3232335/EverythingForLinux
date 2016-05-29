@@ -2,6 +2,8 @@
 #include <QDebug>
 #include <QMessageBox>
 #include <sudodialog.h>
+#include <QClipboard>
+#include <QSqlRecord>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), m_sourceModel()
@@ -44,6 +46,7 @@ void MainWindow::setupUi()
     verticalLayout->addLayout(horizontalLayout);
 
     tableView = new CTableView(centralWidget);
+    tableView->setObjectName(QString::fromUtf8("tableView"));
 
     verticalLayout->addWidget(tableView);
 
@@ -104,10 +107,72 @@ bool MainWindow::initTable()
     tableView->setColumnWidth(2, 70);
     tableView->setColumnWidth(3, 130);
     tableView->setStyleSheet("QTableView{border-style: none}"
-                             "QTableView::item:selected{background: rgb(51,153,255)}");
+            "QTableView::item:selected{background: rgb(51,153,255)}");
 
     connect(tableView, SIGNAL(hoverRowChanged(int)), m_sourceModel, SLOT(setHoverRow(int)));
+
+    /* create right button menu */
+    tableView->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(tableView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showContextMenu(QPoint)));
+
     return true;
+}
+
+void MainWindow::on_tableView_doubleClicked(const QModelIndex & index)
+{
+    m_showContextRow = index.row();
+    openFile();
+}
+
+void MainWindow::openFile()
+{
+    QString cmd = "xdg-open " + tableView->model()->index(m_showContextRow, 1).data().toString() + "/"
+        + tableView->model()->index(m_showContextRow, 0).data().toString();
+    if (system(cmd.toLocal8Bit().data()) != 0)
+    {
+        QMessageBox::warning(this, "Error opening", "No application is registered as handling this file");
+    }
+}
+
+void MainWindow::openFilePath()
+{
+    QString cmd = "xdg-open " + tableView->model()->index(m_showContextRow, 1).data().toString();
+    system(cmd.toLocal8Bit().data());
+}
+
+void MainWindow::copyFullPath()
+{
+    QClipboard *board = QApplication::clipboard();
+    QString path = tableView->model()->index(m_showContextRow, 1).data().toString();
+    QString name = tableView->model()->index(m_showContextRow, 0).data().toString();
+    if (path == "/")
+    {
+        board->setText(path + name);
+    }
+    else
+    {
+        board->setText(path + "/" + name);
+    }
+}
+
+void MainWindow::showContextMenu(const QPoint &pos)
+{
+    if (tableView->indexAt(pos).row() == -1)
+    {
+        return;
+    }
+
+    m_showContextRow = tableView->indexAt(pos).row();
+
+    QMenu menu(this);
+    QAction *open = menu.addAction("Open");
+    QAction *openPath = menu.addAction("Open Path");
+    QAction *copyFullPath = menu.addAction("Copy Full Name to Clipboard");
+
+    connect(open, SIGNAL(triggered()), this, SLOT(openFile()));
+    connect(openPath, SIGNAL(triggered()), this, SLOT(openFilePath()));
+    connect(copyFullPath, SIGNAL(triggered()), this, SLOT(copyFullPath()));
+    menu.exec(QCursor::pos());
 }
 
 bool MainWindow::loadSettings(bool loadDefault)
@@ -135,7 +200,6 @@ void MainWindow::setTitle(const QString& text)
     }
 }
 
-#include <QSqlRecord>
 void MainWindow::setFilter(const QString& text)
 {
     //    m_sourceModel->setQuery(strSelectSQL+" WHERE name LIKE '%" + text + "%' ORDER BY name");

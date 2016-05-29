@@ -5,6 +5,9 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#include <QByteArray>
+#include <QSqlRecord>
+
 CSqlQueryModel::CSqlQueryModel(QObject *parent) :
     QSqlQueryModel(parent)
 {
@@ -16,9 +19,6 @@ void CSqlQueryModel::setHoverRow(int row)
     m_hoverRow = row;
 }
 
-
-#include <QByteArray>
-#include <QSqlRecord>
 QVariant CSqlQueryModel::data (const QModelIndex & item, int role) const
 {
     /* Set background color of hover row  RGBA(51,153,255,100)*/

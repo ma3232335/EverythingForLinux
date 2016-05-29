@@ -16,6 +16,7 @@
 
 #include <QMessageBox>
 #include <QSqlError>
+#include <QPoint>
 
 const QString strSelectSQL = "SELECT name, path, type FROM everything";
 const QString strWhereGlobWildcard = " WHERE name GLOB '*%1*'"; /* match case */
@@ -39,6 +40,11 @@ signals:
 public slots:
     void on_keywordEdit_textChanged();
     void reloadModel();
+    void on_tableView_doubleClicked(const QModelIndex & index);
+    void showContextMenu(const QPoint &pos);
+    void openFile();
+    void openFilePath();
+    void copyFullPath();
 
 private:
     void setupUi();
@@ -69,6 +75,7 @@ public:
     QStatusBar *statusBar;
 
 private:
+    int m_showContextRow;
 };
 
 #endif // MAINWINDOW_H
