@@ -28,6 +28,7 @@ QVariant CSqlQueryModel::data (const QModelIndex & item, int role) const
     }
 
     static time_t s_mtime;
+    static size_t s_size;
 
     /* Set 'size' column alignment right|vcenter, other  left|vcenter*/
     if (item.column() == COLUMN_SIZE)
@@ -38,12 +39,7 @@ QVariant CSqlQueryModel::data (const QModelIndex & item, int role) const
         }
         else if (role == Qt::DisplayRole)
         {
-            struct stat fileStat;
-            const QByteArray baFilePath = (record(item.row()).value("path").toString() + "/" + record(item.row()).value("name").toString()).toLatin1();
-            stat(baFilePath.data(), &fileStat);
-            s_mtime = fileStat.st_mtime;
-
-            return sizeValue(fileStat.st_size);
+            return sizeValue(s_size);
         }
     }
 
@@ -52,6 +48,19 @@ QVariant CSqlQueryModel::data (const QModelIndex & item, int role) const
         return timeValue(s_mtime);
     }
 
+    /* icon in REC_NAME section */
+    if (role == Qt::DecorationRole && item.column() == COLUMN_NAME)
+    {
+        struct stat fileStat;
+        const QString strFilePath = record(item.row()).value("path").toString() + "/" + record(item.row()).value("name").toString(); 
+        stat(strFilePath.toLatin1().data(), &fileStat);
+
+        s_mtime = fileStat.st_mtime;
+        s_size = fileStat.st_size;
+
+        QFileInfo fileInfo(strFilePath);
+        return m_iconProvider.icon(fileInfo);
+    }
 
     return QSqlQueryModel::data(item, role);
 }

@@ -2,6 +2,7 @@
 #define CSQLQUERYMODEL_H
 
 #include <QtSql/QSqlQueryModel>
+#include <QFileIconProvider>
 
 enum {
     COLUMN_NAME,
@@ -30,7 +31,7 @@ public slots:
 
 private:
     int m_hoverRow;
-
+    QFileIconProvider m_iconProvider;
 };
 
 #endif // CSQLQUERYMODEL_H
