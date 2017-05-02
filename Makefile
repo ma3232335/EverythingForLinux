@@ -4,7 +4,7 @@ TARGET := bin/everything bin/everything-updatedb
 all: $(TARGET)
 
 bin/everything: 
-	cd everything; /usr/bin/qmake-qt4
+	cd everything; /opt/Qt5.8.0/5.8/gcc_64/bin/qmake
 	make -C everything
 	install -D everything/EverythingForLinux $@ 
 

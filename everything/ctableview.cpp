@@ -59,7 +59,7 @@ void CTableView::setupView()
     verticalHeader()->setHidden(true);
 
 
-    horizontalHeader()->setClickable(false);
+    horizontalHeader()->setSectionsClickable(false);
 }
 
 
